@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
-import { Linking, Image, StatusBar, View, Text, ImageBackground, StyleSheet, Dimensions, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { Avatar, Button, TextInput } from 'react-native-paper';
-import { useNavigation, useFocusEffect, useRoute } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
-import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Splash() {
     const navigation = useNavigation();
-    const route = useRoute();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(true);
 
     const login = () => {
         const user = {
@@ -66,7 +62,6 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 30,
         justifyContent: 'center',
-        // backgroundColor: '#fcf3f2',
     },
     input: {
         marginTop: 16,
@@ -83,6 +78,7 @@ const styles = StyleSheet.create({
         marginTop: 16,
         borderRadius: 25,
         paddingVertical: 5,
+        backgroundColor: '#555',
     },
     image: {
         alignSelf: 'center',

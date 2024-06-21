@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Image, TouchableOpacity, Animated, useWindowDimensions, SectionList, StyleSheet, View, Text, FlatList } from 'react-native';
+import { Alert, Image, TouchableOpacity, Animated, useWindowDimensions, SectionList, StyleSheet, View, Text, FlatList } from 'react-native';
 import { SearchBar, Card } from 'react-native-elements';
 import { List } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -13,7 +13,7 @@ export default function HomeScreen() {
   const [heroTileImages, setHeroTileImages] = useState([]);
   const imageAnimValues = useRef({});
 
-  const updateSearch = (search: string) => {
+  const updateSearch = (search) => {
     setSearch(search);
     if (search.trim() === '') {
       setSearchResults([]);
@@ -41,17 +41,16 @@ export default function HomeScreen() {
     setHeroTileImages(jewelery[1]);
   }, [products])
 
-  useEffect(() => {
-    console.log(heroTileImages)
-  }, [heroTileImages])
-
   // handle text input click
-  const handleTextInputClick = (searchQuery: string) => {
+  const handleTextInputClick = (searchQuery) => {
     if (searchQuery.trim() !== '') {
       const filteredProducts = products.filter(product =>
         product.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setSearchResults(filteredProducts);
+      if (filteredProducts.length === 0) {
+        Alert.alert("No Results", "No products found matching your search criteria.");
+      }
     } else {
       setSearchResults([]);
     }
@@ -173,7 +172,7 @@ export default function HomeScreen() {
 
   const renderHeroTile = () => (
     <View style={styles.heroTile}>
-      <Image source={{uri: heroTileImages.image}} style={styles.heroImage} />
+      <Image source={{uri: heroTileImages?.image}} style={styles.heroImage} />
       <Text style={styles.heroText}>Jewelry Essentials</Text>
       <TouchableOpacity onPress={() => navigation.navigate('ProductDetails', { product: heroTileImages })}>
         <Text style={styles.heroSubtext}>Click to view product!</Text>

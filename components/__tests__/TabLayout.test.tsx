@@ -1,7 +1,14 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { render, waitFor } from '@testing-library/react-native';
 import TabLayout from '@/app/(tabs)/_layout'; // Adjust the import path
 import { NavigationContainer } from '@react-navigation/native';
+
+// Mock SecureStore
+jest.mock('expo-secure-store', () => ({
+  getItemAsync: jest.fn(() => Promise.resolve(JSON.stringify([]))),
+  setItemAsync: jest.fn(),
+  deleteItemAsync: jest.fn()
+}));
 
 // Mock AsyncStorage
 jest.mock('@react-native-async-storage/async-storage', () => ({
@@ -42,39 +49,48 @@ jest.mock('react-native-gesture-handler', () => {
 });
 
 describe('Tab Navigation', () => {
-  it('renders the Home tab initially', () => {
+  it('renders the Home tab initially', async () => {
     const { getByText } = render(
       <NavigationContainer>
         <TabLayout />
       </NavigationContainer>
     );
-    expect(getByText('Home')).toBeTruthy(); // Ensure the Home tab is rendered
+    await waitFor(() => {
+      expect(getByText('Home')).toBeTruthy(); // Ensure the Home tab is rendered
+    });
+    // expect(getByText('Home')).toBeTruthy(); // Ensure the Home tab is rendered
   });
 
-  it('renders the Favorites tab', () => {
+  it('renders the Favorites tab', async () => {
     const { getByText } = render(
       <NavigationContainer>
         <TabLayout />
       </NavigationContainer>
     );
-    expect(getByText('Favorites')).toBeTruthy(); // Ensure the Home tab is rendered
+    await waitFor(() => {
+      expect(getByText('Favorites')).toBeTruthy(); // Ensure the Home tab is rendered
+    });
   });
 
-  it('renders the Cart tab', () => {
+  it('renders the Cart tab', async () => {
     const { getByText } = render(
       <NavigationContainer>
         <TabLayout />
       </NavigationContainer>
     );
-    expect(getByText('Cart')).toBeTruthy(); // Ensure the Home tab is rendered
+    await waitFor(() => {
+      expect(getByText('Cart')).toBeTruthy(); // Ensure the Home tab is rendered
+    });
   });
 
-  it('renders the Profile tab', () => {
+  it('renders the Settings tab', async () => {
     const { getByText } = render(
       <NavigationContainer>
         <TabLayout />
       </NavigationContainer>
     );
-    expect(getByText('Profile')).toBeTruthy(); // Ensure the Home tab is rendered
+    await waitFor(() => {
+      expect(getByText('Settings')).toBeTruthy(); // Ensure the Home tab is rendered
+    });
   });
 });

@@ -1,21 +1,11 @@
-import * as SecureStore from 'expo-secure-store';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import LoginScreen from '@/screens/LoginScreen';
 import HomeScreen from '@/screens/HomeScreen';
 import ProductDetails from '@/screens/ProductDetails';
 
 const HomeStack = createStackNavigator();
 
 function HomeStackNavigator() {
-  const [user, setUser] = useState(null);
-
-  // Check if user is logged in
-  useEffect(() => {
-    SecureStore.getItemAsync('user').then((user) => {
-      setUser(user);
-    });
-  }, []);
 
   return (
     <HomeStack.Navigator>

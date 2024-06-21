@@ -6,11 +6,16 @@
       "@/*": [
         "./*"
       ]
-    }
+    },
+    "module": "es6",
+    "target": "es5",
+    "jsx": "react-native",
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
+    "**/*.js", // Include JavaScript files
+    "**/*.jsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
   ]

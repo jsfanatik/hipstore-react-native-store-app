@@ -21,11 +21,12 @@ export default function PurchaseScreen() {
     // Submit purchase function
     const submitPurchase = () => {
         // Example faux credit card data
+        const cardHolderName = "Jon Snow";
         const fauxCardNumber = "4242424242424242"; // Commonly used test card number
         const fauxExpiryDate = "1224"; // MMYY format
         const fauxCvv = "123";
 
-        if (cardNumber === fauxCardNumber && expiryDate === fauxExpiryDate && cvv === fauxCvv) {
+        if (cardHolderName === fullName && cardNumber === fauxCardNumber && expiryDate === fauxExpiryDate && cvv === fauxCvv) {
             Alert.alert("Transaction Successful", "Your purchase has been processed successfully.");
         } else {
             Alert.alert("Transaction Failed", "Invalid credit card information.");
@@ -105,7 +106,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 5,
-        marginTop: 10, // Add space between the total and the button
+        marginTop: 10,
     }, 
     buttonText: {
         color: 'white',

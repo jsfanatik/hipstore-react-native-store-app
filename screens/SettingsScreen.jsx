@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect, useCallback } from 'react';
+import React, { useState, useLayoutEffect, useCallback } from 'react';
 import { TouchableOpacity, View, Text } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -19,7 +19,7 @@ const SettingsScreen = () => {
   useFocusEffect(
     useCallback(() => {
       SecureStore.getItemAsync('user').then((user) => {
-        setUser(user);
+        setUser(user ? JSON.parse(user) : null);
       });
     }, [])
   );
