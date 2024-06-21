@@ -1,17 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { TouchableOpacity, Animated, useWindowDimensions, SectionList, StyleSheet, View, Text, FlatList } from 'react-native';
 import { SearchBar, Card } from 'react-native-elements';
-import { IconButton, List } from 'react-native-paper';
-import { SwipeListView } from 'react-native-swipe-list-view';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useNavigation } from 'expo-router';
+import { List } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
   const [search, setSearch] = useState('');
   const [sections, setSections] = useState([]);
   const [products, setProducts] = useState([]);
-  const [isTextInputFocused, setTextInputFocused] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const imageAnimValues = useRef({});
 
@@ -165,7 +162,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#fff' }}>
+    <View style={{ flex: 1, backgroundColor: '#fff' }} testID="homeScreenMainView">
       <SearchBar
         placeholder="Search Products..."
         onChangeText={updateSearch}

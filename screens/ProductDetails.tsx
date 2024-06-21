@@ -1,8 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useEffect, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useState, useLayoutEffect, useRef } from 'react';
 import { View, Text, Image, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import BottomSheet from '@gorhom/bottom-sheet';
 
 export default function ProductDetails() {
   const navigation = useNavigation();
@@ -10,6 +11,8 @@ export default function ProductDetails() {
   const [product, setProduct] = useState(null);
   const [favorites, setFavorites] = useState([]);
   const [cart, setCart] = useState([]);
+  const bottomSheetRef = useRef(null);
+
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -103,13 +106,46 @@ export default function ProductDetails() {
   return (
     <View style={styles.container}>
       <Image source={{ uri: product?.image }} style={styles.image} />
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>{product?.title}</Text>
-      </View>
+      <Text style={styles.title}>{product?.title}</Text>
       <Text style={styles.price}>${product?.price}</Text>
+      <TouchableOpacity style={styles.detailsButton} onPress={() => bottomSheetRef.current.expand()}>
+        <Text style={styles.detailsButtonText}>See details</Text>
+      </TouchableOpacity>
       <TouchableOpacity style={styles.purchaseButton} onPress={() => addToCart()}>
         <Text style={styles.buttonText}>{cart.some(item => item.id === product.id) ? 'Remove from cart' : 'Add to cart'}</Text>
       </TouchableOpacity>
+
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={-1}
+        snapPoints={[1, '75%']}
+        style={[styles.bottomSheet]}
+      >
+        <View style={{ flex: 1, backgroundColor: '#fff' }}>
+          <Text style={{
+            fontSize: 16,
+            fontWeight: 'bold',
+            marginTop: 20,
+            marginHorizontal: 20,
+            color: "#333",
+          }}>
+            {product?.title}
+          </Text>
+          <View style={{ 
+              borderBottomColor: '#ccc', 
+              borderBottomWidth: 1, 
+              marginHorizontal: 20,
+              marginTop: 10,
+          }} />
+          <Text style={{ 
+            marginTop: 20, 
+            marginHorizontal: 20, 
+            fontSize: 16, 
+            color: "#333" 
+          }}>
+            {product?.description}</Text>
+        </View>
+      </BottomSheet>  
     </View>
   );
 }
@@ -128,17 +164,11 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     alignSelf: 'center',
   },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-  },
   title: {
     marginTop: 20,
     fontSize: 16,
     fontWeight: 'bold',
-    // paddingHorizontal: 10,
+    paddingHorizontal: 10,
   },
   description: {
     marginTop: 10,
@@ -149,6 +179,16 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     paddingHorizontal: 10,
+  },
+  detailsButton: {
+    marginTop: 10,
+    fontSize: 16,
+    paddingHorizontal: 10,
+  },
+  detailsButtonText: {
+    color: '#555',
+    // fontSize: 16,
+    fontWeight: 'bold',
   },
   favoriteButton: {
     position: 'absolute',
@@ -170,5 +210,16 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold'
+  },
+  bottomSheet: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 30,
+    elevation: 5,
+    marginTop: 5,
   },
 });
