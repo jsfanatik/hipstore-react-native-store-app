@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { TouchableOpacity, Animated, useWindowDimensions, SectionList, StyleSheet, View, Text, FlatList } from 'react-native';
+import { Image, TouchableOpacity, Animated, useWindowDimensions, SectionList, StyleSheet, View, Text, FlatList } from 'react-native';
 import { SearchBar, Card } from 'react-native-elements';
 import { List } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -10,6 +10,7 @@ export default function HomeScreen() {
   const [sections, setSections] = useState([]);
   const [products, setProducts] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
+  const [heroTileImages, setHeroTileImages] = useState([]);
   const imageAnimValues = useRef({});
 
   const updateSearch = (search: string) => {
@@ -19,6 +20,7 @@ export default function HomeScreen() {
     }
   };
 
+  // fetch products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -30,41 +32,47 @@ export default function HomeScreen() {
         console.error('Failed to fetch products:', error);
       }
     };
-
     fetchProducts();
   }, []);
 
+  // get images from women's clothing in products
+  useEffect(() => {
+    const jewelery = products.filter(product => product.category === "jewelery");
+    setHeroTileImages(jewelery[1]);
+  }, [products])
+
+  useEffect(() => {
+    console.log(heroTileImages)
+  }, [heroTileImages])
+
+  // handle text input click
   const handleTextInputClick = (searchQuery: string) => {
-    if (searchQuery.trim() !== '') { // Ensure there's a query to search for
-      // console.log('searchQuery', products.filter(product => product.title.toLowerCase().includes(searchQuery.toLowerCase())))
-      // setSearchResults(products.filter(product => product.title.toLowerCase().includes(searchQuery.toLowerCase())));
+    if (searchQuery.trim() !== '') {
       const filteredProducts = products.filter(product =>
         product.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setSearchResults(filteredProducts);
     } else {
-      setSearchResults([]); // Clear the search results
+      setSearchResults([]);
     }
   };
-
-  useEffect(() => {
-    console.log(searchResults)
-  }, [searchResults])
 
   // animate the image
   const handleImageLoad = (id) => {
     Animated.spring(imageAnimValues.current[id], {
       toValue: 0,
-      friction: 10, // Controls "bounciness"/overshoot. Default 7.
-      tension: 80, // Controls speed. Default 40.
+      friction: 10,
+      tension: 80,
       useNativeDriver: true,
     }).start();
   };
 
+  // navigate to product details
   const navigateToProductDetails = (item) => {
     navigation.navigate('ProductDetails', { product: item });
   };
 
+  // categorize products
   const categorizeProducts = (items) => {
     const categories = ['electronics', 'jewelery', "men's clothing", "women's clothing"];
     const categorizedProducts = categories.map(category => ({
@@ -74,6 +82,7 @@ export default function HomeScreen() {
     setSections(categorizedProducts);
   };
 
+  // render product
   const renderProduct = ({ item }) => (
     <Card containerStyle={styles.card}>
       <TouchableOpacity onPress={() => navigation.navigate('ProductDetails', { product: item })}>
@@ -87,6 +96,7 @@ export default function HomeScreen() {
     </Card>
   );
 
+  // render section
   const renderSection = ({ section }) => (
     <View>
       <Text style={styles.sectionHeader}>{section.title.toUpperCase()}</Text>
@@ -118,7 +128,7 @@ export default function HomeScreen() {
               <Text>${item.price}</Text>
             </View>
           )}
-          titleNumberOfLines={1} // Specify the number of lines
+          titleNumberOfLines={1}
           titleEllipsizeMode='tail'
           left={() =>
             <View style={{ position: 'relative' }}>
@@ -161,6 +171,16 @@ export default function HomeScreen() {
     )
   }
 
+  const renderHeroTile = () => (
+    <View style={styles.heroTile}>
+      <Image source={{uri: heroTileImages.image}} style={styles.heroImage} />
+      <Text style={styles.heroText}>Jewelry Essentials</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('ProductDetails', { product: heroTileImages })}>
+        <Text style={styles.heroSubtext}>Click to view product!</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }} testID="homeScreenMainView">
       <SearchBar
@@ -182,15 +202,15 @@ export default function HomeScreen() {
         />
       ) : (
         <SectionList
-        sections={sections}
-        renderItem={({ item }) => null} // Render nothing here, handled by renderSection
-        renderSectionHeader={({ section }) => null} // Render nothing here, handled by renderSection
-        keyExtractor={(item, index) => item + index}
-        contentContainerStyle={styles.listContainer}
-        renderSectionFooter={renderSection}
-      />
+          sections={sections}
+          renderItem={({ item }) => null}
+          renderSectionHeader={({ section }) => null}
+          keyExtractor={(item, index) => item + index}
+          contentContainerStyle={styles.listContainer}
+          renderSectionFooter={renderSection}
+          ListHeaderComponent={renderHeroTile} 
+        />
       )}
-      
     </View>
   );
 }
@@ -241,8 +261,26 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   card: {
-    width: 160, // Adjust card width for horizontal scrolling
+    width: 160,
     marginRight: 10,
     borderRadius: 10,
+  },
+  heroTile: {
+    paddingVertical: 20,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  heroText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  heroSubtext: {
+    fontSize: 14,
+    color: '#777',
+  },
+  heroImage: {
+    width: '100%',
+    height: 200,
   },
 });

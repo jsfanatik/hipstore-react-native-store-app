@@ -1,44 +1,52 @@
-import React from 'react';
+
+import * as SecureStore from 'expo-secure-store';
+import React, { useState, useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import HomeStackNavigator from '@/components/navigation/HomeStackNavigator'; // Adjust the path as necessary
 import FavoritesNavigator from '@/components/navigation/FavoritesNavigator';
 import CartNavigator from '@/components/navigation/CartNavigator';
-import ProfileNavigator from '@/components/navigation/ProfileNavigator';
-// import ProfileScreen from '@/app/(tabs)/profile';
+import SettingsNavigator from '@/components/navigation/SettingsNavigator';
 
 const Tab = createBottomTabNavigator();
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const [user, setUser] = useState(null);
+
+  // Check if user is logged in
+  useEffect(() => {
+    SecureStore.getItemAsync('user').then((user) => {
+      setUser(user);
+    });
+  }, []);
+
 
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Favorites') {
             iconName = focused ? 'heart' : 'heart-outline';
           } else if (route.name === 'Cart') {
             iconName = focused ? 'cart' : 'cart-outline';
-          } else if (route.name === 'Profile') {
-            iconName = focused ? 'person' : 'person-outline';
+          } else if (route.name === 'Settings') {
+            iconName = focused ? 'cog' : 'cog-outline';
           }
-
-          // You can return any component that you like here!
-          // return <TabBarIcon name={iconName} color={color} />;
-          // You can return any component that you like here!
           return <TabBarIcon name={iconName || 'default-icon'} color={color} />;
         },
-        // tabBarLabel: '',
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         tabBarInactiveTintColor: 'gray',
-        headerShown: false
+        headerShown: false,
+        // tabBarStyle: {
+        //   display: getFocusedRouteNameFromRoute(route) === 'LoginScreen' ? 'none' : 'flex',
+        // },
       })}
     >
       <Tab.Screen 
@@ -80,7 +88,19 @@ export default function TabLayout() {
           },
         })}
       />
-      <Tab.Screen name="Profile" component={ProfileNavigator} options={{ tabBarTestID: 'Profile' }} />
+      <Tab.Screen 
+        name="Settings" 
+        component={SettingsNavigator} 
+        options={{ tabBarTestID: 'Settings' }} 
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            // Prevent default action
+            e.preventDefault();
+            // Navigate to the initial route of the HomeStackNavigator
+            navigation.navigate('Settings', { screen: 'SettingsScreen' });
+          },
+        })}
+      />
     </Tab.Navigator>
   );
 }

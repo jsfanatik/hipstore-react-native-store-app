@@ -1,18 +1,19 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useEffect, useState, useLayoutEffect, useRef } from 'react';
-import { View, Text, Image, StyleSheet, Button, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState, useLayoutEffect, useRef, useCallback } from 'react';
+import { Alert, View, Text, Image, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { useRoute, useNavigation, useFocusEffect } from '@react-navigation/native';
 import BottomSheet from '@gorhom/bottom-sheet';
+import * as SecureStore from 'expo-secure-store';
 
 export default function ProductDetails() {
   const navigation = useNavigation();
   const route = useRoute();
+  const [user, setUser] = useState(null);
   const [product, setProduct] = useState(null);
   const [favorites, setFavorites] = useState([]);
   const [cart, setCart] = useState([]);
   const bottomSheetRef = useRef(null);
-
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -31,6 +32,14 @@ export default function ProductDetails() {
       ),
     });
   }, [navigation, product, favorites]);
+
+  useFocusEffect(
+    useCallback(() => {
+      SecureStore.getItemAsync('user').then((user) => {
+        setUser(user);
+      });
+    }, [])
+  );
 
   useEffect(() => {
     if (route.params && route.params.product) {
@@ -60,10 +69,18 @@ export default function ProductDetails() {
   // add to favorites
   const addToFavorites = async () => {
     try {
+      // check if user is logged in
+      if (!user) {
+        Alert.alert('you must login to add to favorites!');
+        return;
+      }
+      // get favorites from async storage
       const favorites = await AsyncStorage.getItem('favorites');
+      // parse favorites
       const favoritesArray = favorites ? JSON.parse(favorites) : [];
+      // find index of product in favorites
       const index = favoritesArray.findIndex(item => item.id === product.id);
-  
+      // if product is already in favorites, remove it
       if (index !== -1) {
         // Item already exists, remove it
         favoritesArray.splice(index, 1);
@@ -73,9 +90,10 @@ export default function ProductDetails() {
         favoritesArray.push(product);
         console.log('Item added to favorites');
       }
-  
+      // save favorites to async storage
       await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
-      setFavorites(favoritesArray); // Update state to reflect changes
+      // update state to reflect changes
+      setFavorites(favoritesArray);
     } catch (error) {
       console.error('Error adding to favorites:', error);
     }
@@ -83,10 +101,18 @@ export default function ProductDetails() {
 
   const addToCart = async () => {
     try {
+      // check if user is logged in
+      if (!user) {
+        Alert.alert('you must login to add to cart!');
+        return;
+      }
+      // get cart from async storage
       const cart = await AsyncStorage.getItem('cart');
+      // parse cart
       const cartArray = cart ? JSON.parse(cart) : [];
+      // find index of product in cart
       const index = cartArray.findIndex(item => item.id === product.id);
-
+      // if product is already in cart, remove it
       if (index !== -1) {
         // Item already exists, remove it
         cartArray.splice(index, 1);
@@ -97,6 +123,7 @@ export default function ProductDetails() {
       }
       // cartArray.push(product);
       await AsyncStorage.setItem('cart', JSON.stringify(cartArray));
+      // update state to reflect changes
       setCart(cartArray);
     } catch (error) {
       console.error('Error adding to cart:', error);
