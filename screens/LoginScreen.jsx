@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { KeyboardAvoidingView, Platform, View, Text, StyleSheet, Alert } from 'react-native';
 import { Avatar, Button, TextInput } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
@@ -23,30 +23,36 @@ export default function Splash() {
     }
     
     return (
-        <View style={styles.contentContainer}>
-            <Text style={{textAlign: 'center', color: '#222', fontSize: 32, fontWeight: 'bold', marginBottom: 24}}>Welcome to Hipstore!</Text>
-            <Avatar.Image style={styles.image} size={120} source={require('../assets/images/hipstore-logo.jpeg')} />
-            <TextInput
-                mode="outlined"
-                value={email}
-                placeholder="Email"
-                onChangeText={text => setEmail(text)}
-                style={styles.input}
-                theme={{ roundness: 25 }}
-            />
-            <TextInput
-                mode="outlined"
-                value={password}
-                    placeholder="Password"
-                    onChangeText={text => setPassword(text)}
-                    secureTextEntry={true}
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"} // Adjust behavior based on platform
+            keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20} // Optional offset
+        >
+            <View style={styles.contentContainer}>
+                <Text style={{textAlign: 'center', color: '#222', fontSize: 32, fontWeight: 'bold', marginBottom: 24}}>Welcome to Hipstore!</Text>
+                <Avatar.Image style={styles.image} size={120} source={require('../assets/images/hipstore-logo.jpeg')} />
+                <TextInput
+                    mode="outlined"
+                    value={email}
+                    placeholder="Email"
+                    onChangeText={text => setEmail(text)}
                     style={styles.input}
-                theme={{ roundness: 25 }}
-            />
-            <Button style={styles.button} mode="contained" onPress={login}>
-                Login
-            </Button>
-        </View>
+                    theme={{ roundness: 25 }}
+                />
+                <TextInput
+                    mode="outlined"
+                    value={password}
+                        placeholder="Password"
+                        onChangeText={text => setPassword(text)}
+                        secureTextEntry={true}
+                        style={styles.input}
+                    theme={{ roundness: 25 }}
+                />
+                <Button style={styles.button} mode="contained" onPress={login}>
+                    Login
+                </Button>
+            </View>
+        </KeyboardAvoidingView>
     );
 }
 

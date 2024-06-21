@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect } from 'react';
-import { Alert, View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { KeyboardAvoidingView, Platform, Alert, View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 
 export default function PurchaseScreen() {
@@ -35,46 +35,52 @@ export default function PurchaseScreen() {
 
     return (
         <>
-            <View style={styles.container}>
-                <Text style={styles.title}>Purchase</Text>
-                <TextInput
-                    placeholder="Full Name (as it appears on card)"
-                    value={fullName}
-                    onChangeText={setFullName}
-                    style={styles.input}
-                />
-                <TextInput
-                    placeholder="Card Number"
-                    value={cardNumber}
-                    onChangeText={setCardNumber}
-                    keyboardType="numeric"
-                    style={styles.input}
-                />
-                <TextInput
-                    placeholder="Expiry Date"
-                    value={expiryDate}
-                    onChangeText={setExpiryDate}
-                    keyboardType="numeric"
-                    style={styles.input}
-                />
-                <TextInput
-                    placeholder="CVV"
-                    value={cvv}
-                    onChangeText={setCvv}
-                    keyboardType="numeric"
-                    secureTextEntry
-                    style={styles.input}
-                />
-            </View>
-            <View style={styles.bottomContainer}>
-                <View style={styles.totalContainer}>
-                    <Text style={styles.total}>Total:</Text>
-                    <Text style={styles.total}>USD ${route.params ? route.params.totalPrice.toFixed(2) : '0.00'}</Text>
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === "ios" ? "padding" : "height"} // Adjust behavior based on platform
+                keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20} // Optional offset
+            >
+                <View style={styles.container}>
+                    <Text style={styles.title}>Purchase</Text>
+                    <TextInput
+                        placeholder="Full Name (as it appears on card)"
+                        value={fullName}
+                        onChangeText={setFullName}
+                        style={styles.input}
+                    />
+                    <TextInput
+                        placeholder="Card Number"
+                        value={cardNumber}
+                        onChangeText={setCardNumber}
+                        keyboardType="numeric"
+                        style={styles.input}
+                    />
+                    <TextInput
+                        placeholder="Expiry Date"
+                        value={expiryDate}
+                        onChangeText={setExpiryDate}
+                        keyboardType="numeric"
+                        style={styles.input}
+                    />
+                    <TextInput
+                        placeholder="CVV"
+                        value={cvv}
+                        onChangeText={setCvv}
+                        keyboardType="numeric"
+                        secureTextEntry
+                        style={styles.input}
+                    />
                 </View>
-                <TouchableOpacity style={styles.purchaseButton} onPress={() => submitPurchase()}>
-                    <Text style={styles.buttonText}>Submit</Text>
-                </TouchableOpacity>
-            </View>
+                <View style={styles.bottomContainer}>
+                    <View style={styles.totalContainer}>
+                        <Text style={styles.total}>Total:</Text>
+                        <Text style={styles.total}>USD ${route.params ? route.params.totalPrice.toFixed(2) : '0.00'}</Text>
+                    </View>
+                    <TouchableOpacity style={styles.purchaseButton} onPress={() => submitPurchase()}>
+                        <Text style={styles.buttonText}>Submit</Text>
+                    </TouchableOpacity>
+                </View>
+            </KeyboardAvoidingView>
         </>
     );
 }
