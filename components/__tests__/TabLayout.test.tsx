@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react-native';
-import TabLayout from '@/app/(tabs)/_layout'; // Adjust the import path
+import TabLayout from '@/app/(tabs)/_layout';
 import { NavigationContainer } from '@react-navigation/native';
 
 // Mock SecureStore
@@ -58,7 +58,6 @@ describe('Tab Navigation', () => {
     await waitFor(() => {
       expect(getByText('Home')).toBeTruthy(); // Ensure the Home tab is rendered
     });
-    // expect(getByText('Home')).toBeTruthy(); // Ensure the Home tab is rendered
   });
 
   it('renders the Favorites tab', async () => {

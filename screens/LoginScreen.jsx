@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     },
     input: {
         marginTop: 16,
-        borderRadius: 5, // Border radius for rounded corners
+        borderRadius: 5,
     },
     title: {
         fontSize: 60,

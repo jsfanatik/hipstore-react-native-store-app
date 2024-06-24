@@ -1,22 +1,30 @@
 import React, { useState, useRef, useCallback, useLayoutEffect } from 'react';
-import { Alert, View, Text, StyleSheet, LayoutAnimation, useWindowDimensions, TouchableOpacity, Animated } from 'react-native';
+import { FlatList, Alert, View, Text, StyleSheet, LayoutAnimation, useWindowDimensions, TouchableOpacity, Animated } from 'react-native';
 import { List, IconButton } from 'react-native-paper';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import BottomSheet from '@gorhom/bottom-sheet';
+import helpGuide from '../data/helpGuide';
 
 const CartScreen = () => {
   const navigation = useNavigation();
   const [cartItems, setCartItems] = useState([]);
   const imageAnimValues = useRef({});
+  const helpSheetRef = useRef(null);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Cart',
       headerTintColor: '#333',
+      headerRight: () => (
+        <TouchableOpacity onPress={() => helpSheetRef.current.expand()}>
+          <IconButton icon="help-circle-outline" />
+        </TouchableOpacity>
+      ),
     });
   }, [navigation]);
 
@@ -73,8 +81,8 @@ const CartScreen = () => {
   const handleImageLoad = (id) => {
     Animated.spring(imageAnimValues.current[id], {
       toValue: 0,
-      friction: 10, // Controls "bounciness"/overshoot. Default 7.
-      tension: 80, // Controls speed. Default 40.
+      friction: 10,
+      tension: 80,
       useNativeDriver: true,
     }).start();
   };
@@ -177,6 +185,45 @@ const CartScreen = () => {
           />
         )}
       </GestureHandlerRootView>
+
+     {/* BottomSheet for help */}
+      <BottomSheet
+        ref={helpSheetRef}
+        index={0}
+        snapPoints={[1, '50%']}
+        style={[styles.bottomSheet, { marginTop: 5 }]}
+      >
+        <View style={{ flex: 1, backgroundColor: '#fff' }}>
+          <Text style={{
+            fontSize: 16,
+            fontWeight: 'bold',
+            marginTop: 20,
+            marginHorizontal: 20,
+          }}>
+            Instructions
+          </Text>
+          <View style={{ 
+              borderBottomColor: '#ccc', 
+              borderBottomWidth: 1, 
+              marginHorizontal: 20,
+              marginTop: 10,
+          }} />
+          <View style={{ flex: 1, backgroundColor: '#fff' }}>
+            <FlatList
+              data={helpGuide}
+              renderItem={({ item }) => (
+                <View style={styles.itemContainer}>
+                  <Text>
+                    {item.text}
+                  </Text>
+                </View>
+              )}
+              keyExtractor={item => item.id}
+            />
+          </View>
+        </View>
+      </BottomSheet>
+
       <View style={styles.container}>
           <View style={styles.totalContainer}>
               <Text style={styles.total}>Total:</Text>
@@ -216,7 +263,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
-    marginTop: 10, // Add space between the total and the button
+    marginTop: 10,
   }, 
   buttonText: {
     color: 'white',
