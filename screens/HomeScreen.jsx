@@ -13,6 +13,7 @@ export default function HomeScreen() {
   const [heroTileImages, setHeroTileImages] = useState([]);
   const imageAnimValues = useRef({});
 
+  // update search
   const updateSearch = (search) => {
     setSearch(search);
     if (search.trim() === '') {
@@ -91,7 +92,6 @@ export default function HomeScreen() {
           ${item.price}
         </Text>
       </TouchableOpacity>
-
     </Card>
   );
 

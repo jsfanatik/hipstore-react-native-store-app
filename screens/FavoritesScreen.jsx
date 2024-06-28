@@ -1,22 +1,31 @@
 import React, { useState, useRef, useCallback, useLayoutEffect } from 'react';
-import { View, Text, StyleSheet, Animated, useWindowDimensions, LayoutAnimation } from 'react-native';
+import { TouchableOpacity, FlatList, View, Text, StyleSheet, Animated, useWindowDimensions, LayoutAnimation } from 'react-native';
 import { List, IconButton } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import BottomSheet from '@gorhom/bottom-sheet';
+import helpGuide from '../data/helpGuide';
 
 export default function FavoritesScreen() {
   const navigation = useNavigation();
   const [favorites, setFavorites] = useState([]);
   const imageAnimValues = useRef({});
+  const helpSheetRef = useRef(null);
 
+  //set options for the header
   useLayoutEffect(() => {
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Favorites',
       headerTintColor: '#333',
+      headerRight: () => (
+        <TouchableOpacity onPress={() => helpSheetRef.current.expand()}>
+          <IconButton icon="help-circle-outline" />
+        </TouchableOpacity>
+      ),
     });
   }, [navigation]);
 
@@ -49,6 +58,7 @@ export default function FavoritesScreen() {
     }
   };
 
+  //navigate to product details
   const navigateToProductDetails = (item) => {
     navigation.navigate('ProductDetails', { product: item });
   };
@@ -158,6 +168,44 @@ export default function FavoritesScreen() {
           disableLeftSwipe={true}
         />
       )}
+
+      {/* BottomSheet for help */}
+      <BottomSheet
+        ref={helpSheetRef}
+        index={0}
+        snapPoints={[1, '50%']}
+        style={[styles.bottomSheet, { marginTop: 5 }]}
+      >
+        <View style={{ flex: 1, backgroundColor: '#fff' }}>
+          <Text style={{
+            fontSize: 16,
+            fontWeight: 'bold',
+            marginTop: 20,
+            marginHorizontal: 20,
+          }}>
+            Instructions
+          </Text>
+          <View style={{ 
+              borderBottomColor: '#ccc', 
+              borderBottomWidth: 1, 
+              marginHorizontal: 20,
+              marginTop: 10,
+          }} />
+          <View style={{ flex: 1, backgroundColor: '#fff' }}>
+            <FlatList
+              data={helpGuide}
+              renderItem={({ item }) => (
+                <View style={styles.itemContainer}>
+                  <Text>
+                    {item.text}
+                  </Text>
+                </View>
+              )}
+              keyExtractor={item => item.id}
+            />
+          </View>
+        </View>
+      </BottomSheet>
     </GestureHandlerRootView>
   );
 }
@@ -239,7 +287,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   topSection: {
-    backgroundColor: '#de5454', // Adjust the color to match your design
+    backgroundColor: '#de5454',
     paddingHorizontal: 15,
     paddingVertical: 45,
   },

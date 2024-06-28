@@ -15,6 +15,7 @@ export default function ProductDetails() {
   const [cart, setCart] = useState([]);
   const bottomSheetRef = useRef(null);
 
+  //set options for the header
   useLayoutEffect(() => {
     navigation.setOptions({
       headerBackTitleVisible: false,
@@ -30,6 +31,7 @@ export default function ProductDetails() {
     });
   }, [navigation, product, favorites]);
 
+  // get user from secure store
   useFocusEffect(
     useCallback(() => {
       SecureStore.getItemAsync('user').then((user) => {
@@ -38,6 +40,7 @@ export default function ProductDetails() {
     }, [])
   );
 
+  // get product from route params
   useEffect(() => {
     if (route.params && route.params.product) {
       setProduct(route.params.product);
@@ -93,6 +96,7 @@ export default function ProductDetails() {
     }
   };
 
+  // add to cart
   const addToCart = async () => {
     try {
       // check if user is logged in

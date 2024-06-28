@@ -9,6 +9,7 @@ export default function Splash() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    // login function
     const login = () => {
         const user = {
             email: 'Test@test.com',

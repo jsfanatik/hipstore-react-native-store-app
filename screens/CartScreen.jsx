@@ -15,6 +15,7 @@ const CartScreen = () => {
   const imageAnimValues = useRef({});
   const helpSheetRef = useRef(null);
 
+  //set options for the header
   useLayoutEffect(() => {
     navigation.setOptions({
       headerBackTitleVisible: false,

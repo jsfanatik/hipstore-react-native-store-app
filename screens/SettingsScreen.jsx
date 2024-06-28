@@ -8,6 +8,7 @@ const SettingsScreen = () => {
   const navigation = useNavigation();
   const [user, setUser] = useState(null);
 
+  //set options for the header
   useLayoutEffect(() => {
     navigation.setOptions({
       headerBackTitleVisible: false,
@@ -16,6 +17,7 @@ const SettingsScreen = () => {
     });
   }, []);
 
+  //get user from secure store
   useFocusEffect(
     useCallback(() => {
       SecureStore.getItemAsync('user').then((user) => {
@@ -24,13 +26,11 @@ const SettingsScreen = () => {
     }, [])
   );
 
-  const handleLogin = () => {
-    navigation.navigate('LoginScreen');
-  };
-
+  //logout function
   const handleLogout = () => {
     SecureStore.deleteItemAsync('user').then(() => {
       setUser(null);
+      navigation.navigate('LoginScreen');
     });
   };
 
@@ -50,8 +50,8 @@ const SettingsScreen = () => {
           paddingVertical: 20,
         }}
       >
-        <TouchableOpacity onPress={user ? handleLogout : handleLogin}>
-          <MaterialCommunityIcons name={user ? 'logout-variant' : 'login-variant'} size={36} color={user ? 'red' : 'green'} />
+        <TouchableOpacity onPress={handleLogout}>
+          <MaterialCommunityIcons name='logout-variant' size={36} color='red' />
         </TouchableOpacity>
       </View>
   </View>

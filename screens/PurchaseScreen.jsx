@@ -10,6 +10,7 @@ export default function PurchaseScreen() {
     const [expiryDate, setExpiryDate] = useState('');
     const [cvv, setCvv] = useState('');
 
+    //set options for the header
     useLayoutEffect(() => {
         navigation.setOptions({
           headerBackTitleVisible: false,
