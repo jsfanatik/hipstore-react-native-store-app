@@ -4,7 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
 
-const SettingsScreen = () => {
+export default function SettingsScreen() {
   const navigation = useNavigation();
   const [user, setUser] = useState(null);
 
@@ -57,4 +57,3 @@ const SettingsScreen = () => {
   </View>
   );
 };
-export default SettingsScreen;

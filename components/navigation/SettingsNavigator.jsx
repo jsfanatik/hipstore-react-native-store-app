@@ -5,9 +5,9 @@ import HomeScreen from '@/screens/HomeScreen';
 import LoginScreen from '@/screens/LoginScreen';
 import SettingsScreen from '@/screens/SettingsScreen';
 
-const HomeStack = createStackNavigator();
+const SettingsStack = createStackNavigator();
 
-function HomeStackNavigator({ navigation, route }) {
+function SettingsStackNavigator({ navigation, route }) {
 
   useEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? 'LoginScreen';
@@ -20,9 +20,9 @@ function HomeStackNavigator({ navigation, route }) {
   }, [navigation, route]);
 
   return (
-    <HomeStack.Navigator>
-      <HomeStack.Screen name="SettingsScreen" component={SettingsScreen}/>
-      <HomeStack.Screen 
+    <SettingsStack.Navigator>
+      <SettingsStack.Screen name="SettingsScreen" component={SettingsScreen}/>
+      <SettingsStack.Screen 
         name="LoginScreen" 
         component={LoginScreen} 
         options={{ headerShown: false, tabBarStyle: { display: 'none' } }}
@@ -30,8 +30,8 @@ function HomeStackNavigator({ navigation, route }) {
           blur: () => navigation.replace('SettingsScreen') // Replace LoginScreen with ProfileScreen when navigating away
         })}
       />
-    </HomeStack.Navigator>
+    </SettingsStack.Navigator>
   );
 }
 
-export default HomeStackNavigator;
+export default SettingsStackNavigator;
