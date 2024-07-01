@@ -43,7 +43,7 @@ export default function FavoritesScreen() {
   );
 
   //remove item from favorites
-  const handleRemoveItem = async (rowMap, rowKey) => {
+  const handleRemoveItem = async (rowMap = null, rowKey = null) => {
     // get the list without the item
     const updateList = favorites.filter(item => item.id !== rowKey);
     // remove item from AsyncStorage
@@ -59,12 +59,12 @@ export default function FavoritesScreen() {
   };
 
   //navigate to product details
-  const navigateToProductDetails = (item) => {
+  const navigateToProductDetails = (item = null) => {
     navigation.navigate('ProductDetails', { product: item });
   };
 
   // animate the image
-  const handleImageLoad = (id) => {
+  const handleImageLoad = (id = null) => {
     Animated.spring(imageAnimValues.current[id], {
       toValue: 0,
       friction: 10, // Controls "bounciness"/overshoot. Default 7.
@@ -74,7 +74,7 @@ export default function FavoritesScreen() {
   };
 
   // Render the list items
-  const renderSwipeItem = ({ item, index }) => {
+  const renderSwipeItem = ({ item = null, index = null }) => {
     if (!imageAnimValues.current[item.id]) {
       imageAnimValues.current[item.id] = new Animated.Value(-1);
     }
@@ -134,7 +134,7 @@ export default function FavoritesScreen() {
     )
   }
 
-  const renderHiddenItem = (data, rowMap) => {
+  const renderHiddenItem = (data = null, rowMap = null) => {
     return (
       <View style={styles.hiddenContainer}>
         <IconButton
@@ -194,7 +194,7 @@ export default function FavoritesScreen() {
           <View style={{ flex: 1, backgroundColor: '#fff' }}>
             <FlatList
               data={helpGuide}
-              renderItem={({ item }) => (
+              renderItem={({ item = null }) => (
                 <View style={styles.itemContainer}>
                   <Text>
                     {item.text}
