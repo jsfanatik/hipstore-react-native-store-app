@@ -7,7 +7,7 @@ import SettingsScreen from '@/screens/SettingsScreen';
 
 const SettingsStack = createStackNavigator();
 
-function SettingsStackNavigator({ navigation, route }) {
+function SettingsStackNavigator({ navigation = null, route = null }) {
 
   useEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? 'LoginScreen';

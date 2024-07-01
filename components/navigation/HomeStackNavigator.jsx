@@ -8,7 +8,7 @@ import ProductDetails from '@/screens/ProductDetails';
 
 const HomeStack = createStackNavigator();
 
-function HomeStackNavigator({ navigation, route }) {
+function HomeStackNavigator({ navigation = null, route = null }) {
 
   useEffect(() => {
     const getUser = async () => {

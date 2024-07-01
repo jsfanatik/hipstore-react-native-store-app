@@ -43,7 +43,7 @@ const CartScreen = () => {
   );
 
   // Function to remove item from cart
-  const handleRemoveItem = async (rowMap, rowKey) => {
+  const handleRemoveItem = async (rowMap = null, rowKey = null) => {
     // get the list without the item
     const updateList = cartItems.filter(item => item.id !== rowKey);
     // remove item from AsyncStorage
@@ -59,7 +59,7 @@ const CartScreen = () => {
   };
 
   // Function to navigate to product details
-  const navigateToProductDetails = (item) => {
+  const navigateToProductDetails = (item = null) => {
     navigation.navigate('ProductDetails', { product: item });
   };
 
@@ -79,7 +79,7 @@ const CartScreen = () => {
   const totalPrice = cartItems.reduce((acc, item) => acc + item.price, 0);
 
   // animate the image
-  const handleImageLoad = (id) => {
+  const handleImageLoad = (id = null) => {
     Animated.spring(imageAnimValues.current[id], {
       toValue: 0,
       friction: 10,
@@ -89,7 +89,7 @@ const CartScreen = () => {
   };
     
       // Render the list items
-  const renderSwipeItem = ({ item, index }) => {
+  const renderSwipeItem = ({ item = null, index = null }) => {
     if (!imageAnimValues.current[item.id]) {
         imageAnimValues.current[item.id] = new Animated.Value(-1);
     }
@@ -149,7 +149,7 @@ const CartScreen = () => {
     )
   }
     
-  const renderHiddenItem = (data, rowMap) => {
+  const renderHiddenItem = (data = null, rowMap = null) => {
     return (
       <View style={styles.hiddenContainer}>
         {/* Right Swipe Action for items in the custom list */}
@@ -212,7 +212,7 @@ const CartScreen = () => {
           <View style={{ flex: 1, backgroundColor: '#fff' }}>
             <FlatList
               data={helpGuide}
-              renderItem={({ item }) => (
+              renderItem={({ item = null }) => (
                 <View style={styles.itemContainer}>
                   <Text>
                     {item.text}

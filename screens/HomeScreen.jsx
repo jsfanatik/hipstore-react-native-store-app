@@ -7,19 +7,12 @@ import { useNavigation } from '@react-navigation/native';
 export default function HomeScreen() {
   const navigation = useNavigation();
   const [search, setSearch] = useState('');
-  const [sections, setSections] = useState([]);
   const [products, setProducts] = useState([]);
+  const [productSections, setProductSections] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [heroTileImages, setHeroTileImages] = useState([]);
   const imageAnimValues = useRef({});
 
-  // update search
-  const updateSearch = (search) => {
-    setSearch(search);
-    if (search.trim() === '') {
-      setSearchResults([]);
-    }
-  };
 
   // fetch products
   useEffect(() => {
@@ -43,7 +36,7 @@ export default function HomeScreen() {
   }, [products])
 
   // handle text input click
-  const handleTextInputClick = (searchQuery) => {
+  const handleTextInputClick = (searchQuery = '') => {
     if (searchQuery.trim() !== '') {
       const filteredProducts = products.filter(product =>
         product.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -57,8 +50,16 @@ export default function HomeScreen() {
     }
   };
 
+    // update search
+  const updateSearch = (search = '') => {
+    setSearch(search);
+    if (search.trim() === '') {
+      setSearchResults([]);
+    }
+  };
+
   // animate the image
-  const handleImageLoad = (id) => {
+  const handleImageLoad = (id = null) => {
     Animated.spring(imageAnimValues.current[id], {
       toValue: 0,
       friction: 10,
@@ -68,22 +69,25 @@ export default function HomeScreen() {
   };
 
   // navigate to product details
-  const navigateToProductDetails = (item) => {
+  const navigateToProductDetails = (item = null) => {
     navigation.navigate('ProductDetails', { product: item });
   };
 
   // categorize products
-  const categorizeProducts = (items) => {
-    const categories = ['electronics', 'jewelery', "men's clothing", "women's clothing"];
+  const categorizeProducts = (items = []) => {
+    // get unique categories
+    const categories = [...new Set(items.map(item => item.category))];
+    // create sections
     const categorizedProducts = categories.map(category => ({
       title: category,
       data: items.filter(item => item.category === category)
     }));
-    setSections(categorizedProducts);
+
+    setProductSections(categorizedProducts);
   };
 
   // render product
-  const renderProduct = ({ item }) => (
+  const renderProduct = ({ item = null }) => (
     <Card containerStyle={styles.card}>
       <TouchableOpacity onPress={() => navigation.navigate('ProductDetails', { product: item })}>
         <Card.Image source={{ uri: item.image }} />
@@ -96,9 +100,9 @@ export default function HomeScreen() {
   );
 
   // render section
-  const renderSection = ({ section }) => (
+  const renderSection = ({ section = null }) => (
     <View>
-      <Text style={styles.sectionHeader}>{section.title.toUpperCase()}</Text>
+      <Text style={styles.sectionHeader}>{section.title}</Text>
       <FlatList
         horizontal
         data={section.data}
@@ -110,7 +114,7 @@ export default function HomeScreen() {
     </View>
   );
 
-  const renderSearchResults = ({ item, index }) => {
+  const renderSearchResults = ({ item = null, index = null }) => {
     if (!imageAnimValues.current[item.id]) {
       imageAnimValues.current[item.id] = new Animated.Value(-1);
     }
@@ -201,7 +205,7 @@ export default function HomeScreen() {
         />
       ) : (
         <SectionList
-          sections={sections}
+          sections={productSections}
           renderItem={({ item }) => null}
           renderSectionHeader={({ section }) => null}
           keyExtractor={(item, index) => item + index}
