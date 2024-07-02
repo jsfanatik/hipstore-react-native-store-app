@@ -13,7 +13,6 @@ export default function HomeScreen() {
   const [heroTileImages, setHeroTileImages] = useState([]);
   const imageAnimValues = useRef({});
 
-
   // fetch products
   useEffect(() => {
     const fetchProducts = async () => {
